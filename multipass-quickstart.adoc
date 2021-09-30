@@ -1,0 +1,133 @@
+= Mulitpass Cookbook
+:author: Jack O'Brien
+:email: jack@yumi.ai
+:imagesdir: images
+:source-highlighter: highlight.js
+:highlightjs-theme: atom-one-dark
+:icons: font
+:toc:
+:experimental:
+
+== Multipass Quickstart
+To start I want to launch a instance using multipass you can either do this via the command line or the gui it's your choice.
+
+make sure you know that with every update you make on multipass it will remove old instances from any prior version before it.
+
+[TIP]
+_make sure to commit any changes to a github repo._
+
+I'm going to go ahead with making a instance make notes on the steps.
+
+[source, Bash]
+----
+multipass launch -n customname -d 10G <1> <2> <3>
+----
+<1> Enter a custom name for your instance or leave it up to the api to give you a fancy random one.
+<2> Allocate the ammount of diskspace you want for your instance, the default is 5GB.
+<3> This is optional but you can also allocate memory and cpu cores with -c and -m for memory
+
+[source, Bash]
+----
+multipass set client.primary-name=customname <1>
+----
+<1> we are setting the default instance to the one we just created, make sure to set the name of your primary instance to the name of your instance you just created.
+
+[source, Bash]
+----
+multipass shell <1>
+
+multipass shell customname <2>
+----
+<1> opening up our new instance with the shell command. because we set up the deafult instance we dont have to be excplicit. such as the code below.
+<2> We only use this if we have 2 or more isntances that we wish to change between.
+
+=== Other Multipass Syntax References
+Incase you missed some stuff and need to refresh on a little bit of the syntax.
+[source, Bash]
+----
+multipass delete [instance-name] <1>
+
+mulitpass purge <2>
+
+multipass ls <3>
+multipass list <3>
+
+mulitpass info [instance-name] <4>
+
+multipass stop <5>
+multipass stop [instance-name] <6>
+
+multipass start <7>
+multipass stop [instance-name] <8>
+----
+<1> Delete your an instance.
+<2> purge all delete instances.
+<3> list all instances.
+<4> give all info on an instance.
+<5> Stop the your defauly primary instance.
+<6> Stop an instance by name.
+<7> Start the your defauly primary instance.
+<8> Start an instance by name.
+
+== SSH Keys Quickstart
+
+If your doing remote control from any text editor that supports ssh remote like a text editor like vscode or directly in an instance itself we need to generate our ssh keys pairs.
+
+Make sure to shell directly into the instance, good thing is that our instances automatically come with ssh!
+
+[source, Bash]
+----
+ssh-keygen -t rsa <1>
+----
+<1> generating a default key-pair.
+
+This will create a deafult key-pair jsut go by the default options with it;s location and without a seed phrase unless you have something worth keeping.
+
+if you `ls -a` into your home folder you should see a `.ssh` folder with your private and public keys.
+
+[NOTE]
+If that folder didn't add an `authorized_keys` file into that folder you can just create a new one and append your public key into it.
+
+[source, Bash]
+----
+cd .ssh
+vi authorized_keys
+----
+
+== SSH Remote Configuration
+
+We now have our ssh keys set up and you want to connect you terminal to a text-editor.
+
+Download the SSH-Remote extention in vscode and make sure to have your ssh keys on your local machine ready. if you dont have any ssh key pairs generated just follow the same steps above.
+
+your also going to want to create a config file in your `.ssh` folder. The .`ssh` folder by the way should be located under `C:\Users\[your-username]`
+
+[source, Powershell]
+----
+mkdir config; cd config; new-item -f config
+----
+
+Go ahead and open up the config file in vscode or notepad whatever ones you want to use, up to you.
+
+You can also access the config file by pressing kbd:[Ctrl+Shift+P] and typing ssh configuration press enter and it should bring up the config file on you local drive. 
+
+copy and paste this template in...
+
+[source, Bash]
+----
+Host [instance-name] <1>
+    HostName [instance-name].mshome.net <1> <2>
+    User ubuntu
+----
+<1> you will have to change the name here for every new instance or just add a new one and have multiple.
+<2> were using a static IP address here so we dont have to keep coming back and changing the IP address.
+
+Shell back into your instance and open a new window on your local machine at your default `.ssh` location. open up the public key file and copy it into your clipboard.
+
+back in your instance `cd` into your `.ssh` foler and open up the `authorized_keys` file using vim.
+
+press `a` to append and kbd:[Ctrl+V] to copy and paste your local machines public key, make sure to do it several lines after the public key of your primary instance.
+
+press kbd:[Esc] and `:wq!` to write and save.
+
+That's it! your done, now connect via the ssh remote plugin and have fun.
