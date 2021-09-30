@@ -1,0 +1,7 @@
+= Read-Me
+:description: A redme file overview
+:url-repo: https://github.com/PardusEidolon/Multipass-Notes
+
+== Multipass Cookbook Notes
+
+This is a private repo to list out the small things that I forget about multipass. Like all the command line syntax that I will forget. Plus the intricate fickle process that is ssh.
